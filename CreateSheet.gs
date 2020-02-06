@@ -32,22 +32,3 @@ function makeLatestData() {
       .setHeight(150);
   SpreadsheetApp.getUi().showModelessDialog(htmlOutput, '作成しました');
 }*/
-
-/**
- * 別スプシへデータを書き出す
- * 内定者インターン・レンタル: https://docs.google.com/spreadsheets/d/1ZgQoZFQUHmglUv14QRplSI-iCpBmU6zun-X7AJMK5oY/edit#gid=78777832
- * ライブラリ RentalPc： https://script.google.com/d/M734HhKXBXrZHXEzrZjZBtv2vJ94xa-wl/edit?mid=ACjPJvF31u2fW0cZ_va5Gdxc13jvynMxx9KBDkdLq54UBm9QfXFJTuRFDjmvwlIdhKQjhO5w2ID9a9C7DwUybXB5mZgP0W3MCmfV2E3g7rXjRNJdTKA9E3dnrPmuymWSEwvbvhEsAYQHuuU&uiv=2 
- */
-function updateInternlistSinc() {
-  var targetSheet = new RentalPc.SimplitSheet();
-  targetSheet.sheet.getRange(2, 2, targetSheet.values.length - 1, targetSheet.values[0].length -1).clearContent(); // 対象スプレッドシートの対象シートのデータを削除
-  
-  var csvData = simplitCSVSheet.values
-    .slice(simplitCSVSheet.titleRow + 1)
-    .map(function(value) { value.splice(simplitCSVSheet.getIndex().timeStamp, 1); return value; }); // タイトル以下 タイムスタンプを抜いたデータ
- 
-  targetSheet.sheet
-    .getRange(2, 2, Number(simplitCSVSheet.getLastRow()) - 1, Number(simplitCSVSheet.getLastColumn()) - 1)
-    .setValues(csvData);//CSVデータシートから取得した内容を対象シートにセット
-}
-
