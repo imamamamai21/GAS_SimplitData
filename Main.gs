@@ -23,6 +23,14 @@ function showTitleError(key) {
 function midnightUpdate() {
   putKintone(simplitCSVSheet.getZenshisuData()); // 台帳の自動更新を走らせる
 }
+/**
+ * 午後に行う更新
+ * トリガー登録：池田 毎日14:00~15:00
+ */
+function afternoonUpdate() {
+  // レンタルPC(インターン・内定者用)シートのデータを更新する
+  updateInternlistSinc();
+}
 
 
 // TODO: これ使っているか聞く　＞＜

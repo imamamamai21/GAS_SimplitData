@@ -34,7 +34,6 @@ function UpdateData() {
     }
     createStoreData(Simplit_Data);
     updateCSVData(Simplit_Data, timeStamp);
-    updateInternlistSinc();
     RentalReturnTaskSheet.createNewEndPc();
     postEndData(today.getDate());
     return RESULT_TEXT__SUCCESS;
