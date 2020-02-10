@@ -43,6 +43,7 @@ function postEndData(day) {
   var memoSheet = SpreadsheetApp.openById(MY_SHEET_ID).getSheetByName('はじめに');
   var lastMemo = memoSheet.getRange(MY_SHEET_ROW__BOT_MEMO + ':' + MY_SHEET_ROW__BOT_MEMO).getValues().filter(String).length;
   var beforeDate;
+  var editValues = [];
   
   // 毎月1日は投稿履歴をリセット(全てのものを投稿する)
   var isTopDay = (day === 1);
@@ -51,18 +52,15 @@ function postEndData(day) {
       memoSheet.getRange(MY_SHEET_ROW__BOT_MEMO + i).setValue('');
     }
   }
-  
   getSortedEndList().forEach(function (value, index) {
     if (!isTopDay) {
       // すでにBOTで吐かれた契約番号か否か
       var isPosted = memoSheet.getDataRange().getValues().filter(function(memo) {
-        return memo[4] === (value.agreementNo + value.endDate);
+        return memo[4] === value.rentalNo;
       });
       if (isPosted.length > 0) return;
     }
-
-    // メモに契約番号を書き込む
-    memoSheet.getRange(MY_SHEET_ROW__BOT_MEMO + (lastMemo + 1 + index)).setValue(value.agreementNo + value.endDate);
+    editValues.push([value.rentalNo]);
     var date = Utilities.formatDate(value.endDate, "JST", "yyyy年MM月dd日");
     
     if (beforeDate !== date) {
@@ -71,8 +69,11 @@ function postEndData(day) {
     }
     text += '```\nNO: ' + value.rentalNo + '  契約番号: ' + value.agreementNo + '\n```\n';
   });
+  if (text === TITLE || editValues.length === 0) return;
   
-  if (text === TITLE) return;
+  // メモに契約番号を書き込む
+  memoSheet.getRange(lastMemo + 1, 5, editValues.length, 1).setValues(editValues);
+    
   text += '\n\n以上が期間が過ぎているor２週間以内に過ぎるリストです。' +
   '\nチェックは平日12:00~13:00に走ります。\n毎月1日には全ての終了間近PCを表示しますが、それ以降は新たにリストに上がったPCがあった時のみ表示します。\n\n' +
   '\n▼関連シート\n* [Simplitデータ](' + SHEET_URL + MY_SHEET_ID + ')\n* [人事用返却シート](' + SHEET_URI__RETURN_JINJI + ')\n* [返却タスクシート](' + SHEET_URI__RETURN_TASK + ')\n';
