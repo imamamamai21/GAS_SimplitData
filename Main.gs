@@ -21,7 +21,17 @@ function showTitleError(key) {
  * トリガー登録：池田 毎日1:00~2:00
  */
 function midnightUpdate() {
+  if (isHoliday()) return; // 土日を避ける
   putKintone(simplitCSVSheet.getZenshisuData()); // 台帳の自動更新を走らせる
+}
+
+/**
+ * お昼のトリガー
+ * トリガー登録：池田 毎日13:00~14:00
+ */
+function afternoonCheck() {
+  if (isHoliday()) return; // 土日を避ける
+  postEndData();
 }
 
 // TODO: これ使っているか聞く　＞＜
@@ -38,4 +48,10 @@ function TriggeredUpdate() {
 function UploadReauest() {
   var body = '資産管理チーム各位\n\nお疲れ様です！\n本日のSimplitデータのアップロードをお願いします！\n\nSimplitManagerからダウンロードしたレンタル台帳データをファイル名を変更せずに下記にアップロードしてください。\nhttps://drive.google.com/drive/folders/1JOnTxUsT8rxRYd8ougVkSEwpWt_OB_9J\n\n12時までにアップロードすると、自動的に下記のスプレッドシートに反映されます。\nhttps://docs.google.com/spreadsheets/d/1j4KatfSqVIiUnVckXfu7KCvh_ZTzemGUbct5UeWDgHM\n\n手動で反映する場合は、このスプレッドシートのメニューにある「Simplit」から「Simplitインポート」を実行してください。'
   MailApp.sendEmail('infosys_sup@cyberagent.co.jp', 'Simplitデータの更新をお願いします！', body);
+}
+
+function isHoliday() {
+  var today = new Date();
+  var week = today.getDay();
+  return (week === 0 && week === 6);
 }

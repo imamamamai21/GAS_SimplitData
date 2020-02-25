@@ -5,10 +5,7 @@ var RESULT_TEXT__ERROR = '成功';
  * CSVファイルをインポートしてデータを更新する
  */
 function UpdateData() {
-  var today = new Date();
-  var week = today.getDay();
-  // 土日を避ける
-  if (week === 0 && week === 6) return;
+  if (isHoliday()) return; // 土日を避ける
   
   try {
     var Simplit_Data_Upfolder = DriveApp.getFolderById('1JOnTxUsT8rxRYd8ougVkSEwpWt_OB_9J');//SimplitDataのCSVファイルアップロードフォルダオブジェクトの取得
@@ -35,7 +32,6 @@ function UpdateData() {
     createStoreData(Simplit_Data);
     updateCSVData(Simplit_Data, timeStamp);
     RentalReturnTaskSheet.createNewEndPc();
-    postEndData(today.getDate());
     return RESULT_TEXT__SUCCESS;
   } catch (e) {
     return RESULT_TEXT__ERROR;

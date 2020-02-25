@@ -35,6 +35,7 @@ var SimplitSheet = function(sheetName) {
       startExtensionDate: filterData.indexOf('レンタル延長開始日'),
       endDate           : filterData.indexOf('レンタル終了予定日'),
       contractedParty   : filterData.indexOf('契約先事業所名称'),
+      demandCompany     : filterData.indexOf('需要先会社名称'),
       money             : filterData.indexOf('レンタル月額(契約先)')
     };
     return this.index;

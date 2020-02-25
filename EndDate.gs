@@ -14,7 +14,8 @@ function getEndList() {
       return {
         rentalNo: simplitCSVSheet.getRentalNo(value[index.yrlNo].toString()),
         endDate: value[index.endDate],
-        agreementNo: value[index.agreementNo]
+        agreementNo: value[index.agreementNo],
+        demandCompany: value[index.demandCompany]
       };
     });
 }
@@ -34,9 +35,8 @@ function getSortedEndList() {
 /**
  * レンタル終了間近のものをworkplaceにBOTから投稿する
  * 前回投稿したものは投稿しない
- * @param day(string) 日
  */
-function postEndData(day) {
+function postEndData() {
   const TITLE = '# ▼レンタルの終了日が近づいているPCがあります\n';
   const MY_SHEET_ROW__BOT_MEMO = 'E';
   var text = TITLE;
@@ -44,6 +44,7 @@ function postEndData(day) {
   var lastMemo = memoSheet.getRange(MY_SHEET_ROW__BOT_MEMO + ':' + MY_SHEET_ROW__BOT_MEMO).getValues().filter(String).length;
   var beforeDate;
   var editValues = [];
+  var day = (new Date()).getDate();
   
   // 毎月1日は投稿履歴をリセット(全てのものを投稿する)
   var isTopDay = (day === 1);
@@ -67,7 +68,7 @@ function postEndData(day) {
       text += '## レンタル終了予定日: ' + date + '\n';
       beforeDate = date;
     }
-    text += '```\nNO: ' + value.rentalNo + '  契約番号: ' + value.agreementNo + '\n```\n';
+    text += '```\nNO: ' + value.rentalNo + '  契約番号: ' + value.agreementNo + '　需要先: ' + value.demandCompany + '\n```\n';
   });
   if (text === TITLE || editValues.length === 0) return;
   
@@ -75,13 +76,9 @@ function postEndData(day) {
   memoSheet.getRange(lastMemo + 1, 5, editValues.length, 1).setValues(editValues);
     
   text += '\n\n以上が期間が過ぎているor２週間以内に過ぎるリストです。' +
-  '\nチェックは平日12:00~13:00に走ります。\n毎月1日には全ての終了間近PCを表示しますが、それ以降は新たにリストに上がったPCがあった時のみ表示します。\n\n' +
+  '\nチェックは平日13:00~14:00に走ります。\n毎月1日には全ての終了間近PCを表示しますが、それ以降は新たにリストに上がったPCがあった時のみ表示します。\n\n' +
   '\n▼関連シート\n* [Simplitデータ](' + SHEET_URL + MY_SHEET_ID + ')\n* [人事用返却シート](' + SHEET_URI__RETURN_JINJI + ')\n* [返却タスクシート](' + SHEET_URI__RETURN_TASK + ')\n';
   
+  //WorkplaceApi.postBotForTest(text);
   WorkplaceApi.postBotForArms(text);
-}
-
-function testE() {
-  var today = new Date();
-  postEndData(today.getDate());
 }
