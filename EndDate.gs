@@ -40,6 +40,7 @@ function postEndData() {
   const TITLE = '# ▼レンタルの終了日が近づいているPCがあります\n';
   const MY_SHEET_ROW__BOT_MEMO = 'E';
   var text = TITLE;
+  var noOnlyText = ''; // レンタル番号のみを表示するテキスト
   var memoSheet = SpreadsheetApp.openById(MY_SHEET_ID).getSheetByName('はじめに');
   var lastMemo = memoSheet.getRange(MY_SHEET_ROW__BOT_MEMO + ':' + MY_SHEET_ROW__BOT_MEMO).getValues().filter(String).length;
   var beforeDate;
@@ -69,6 +70,7 @@ function postEndData() {
       beforeDate = date;
     }
     text += '```\nNO: ' + value.rentalNo + '  契約番号: ' + value.agreementNo + '　需要先: ' + value.demandCompany + '\n```\n';
+    noOnlyText += value.rentalNo + '\n';
   });
   if (text === TITLE || editValues.length === 0) return;
   
@@ -77,7 +79,8 @@ function postEndData() {
     
   text += '\n\n以上が期間が過ぎているor２週間以内に過ぎるリストです。' +
   '\nチェックは平日13:00~14:00に走ります。\n毎月1日には全ての終了間近PCを表示しますが、それ以降は新たにリストに上がったPCがあった時のみ表示します。\n\n' +
-  '\n▼関連シート\n* [Simplitデータ](' + SHEET_URL + MY_SHEET_ID + ')\n* [人事用返却シート](' + SHEET_URI__RETURN_JINJI + ')\n* [返却タスクシート](' + SHEET_URI__RETURN_TASK + ')\n';
+  '\n▼関連シート\n* [Simplitデータ](' + SHEET_URL + MY_SHEET_ID + ')\n* [人事用返却シート](' + SHEET_URI__RETURN_JINJI + ')\n* [返却タスクシート](' + SHEET_URI__RETURN_TASK + ')\n' +
+  '\n▼検索用\n```\n' + noOnlyText + '```\n';
   
   //WorkplaceApi.postBotForTest(text);
   WorkplaceApi.postBotForArms(text);

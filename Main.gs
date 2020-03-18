@@ -20,9 +20,9 @@ function showTitleError(key) {
  * 深夜に行う更新
  * トリガー登録：池田 毎日1:00~2:00
  */
-function midnightUpdate() {
+function midnightTrigger() {
   if (isHoliday()) return; // 土日を避ける
-  putKintone(simplitCSVSheet.getZenshisuData()); // 台帳の自動更新を走らせる
+  updateKintone(simplitCSVSheet.getZenshisuData()); // 台帳の自動更新を走らせる
 }
 
 /**
@@ -33,8 +33,6 @@ function afternoonCheck() {
   if (isHoliday()) return; // 土日を避ける
   postEndData();
 }
-
-// TODO: これ使っているか聞く　＞＜
 
 function TriggeredUpdate() {
   var DateObject = new Date();
@@ -51,7 +49,6 @@ function UploadReauest() {
 }
 
 function isHoliday() {
-  var today = new Date();
-  var week = today.getDay();
+  var week = (new Date()).getDay();
   return (week === 0 && week === 6);
 }

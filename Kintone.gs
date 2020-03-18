@@ -3,10 +3,17 @@
  * レンタル番号に基づく台帳にレンタル終了日を入れます
  * @param tagetData { [[string]] } シートのデータ
  */
-function putKintone(tagetData) {
+function updateKintone(tagetData) {
   var index = simplitCSVSheet.getIndex();
   var dataTitles = KintonePCData.pcDataSheet.getTitles();
-  var pcData = KintonePCData.pcDataSheet.values;
+  var pcData = KintonePCData.pcDataSheet.values.slice(2).filter(function(pcValue) {
+     return (pcValue[dataTitles.rentalid.index] != '' &&
+            pcValue[dataTitles.rental_status.index] != '終了' &&
+            pcValue[dataTitles.pc_status.index] != '廃止' &&
+            pcValue[dataTitles.pc_status.index] != '紛失' &&
+            pcValue[dataTitles.pc_status.index] != '譲渡済' &&
+            pcValue[dataTitles.pc_status.index] != '使用不可');
+  });
   var putData = [];
   
   tagetData.forEach(function(value) {
@@ -14,16 +21,11 @@ function putKintone(tagetData) {
     var rendalDate = Utilities.formatDate(value[index.endDate], 'JST', 'yyyy-MM-dd');
     
     // 台帳データを取得しまとめているシートから参照する
-    var data = pcData.slice(2).filter(function(pcData) {
-      var editedDate = pcData[dataTitles.rental_end.index] != '' ? Utilities.formatDate(pcData[dataTitles.rental_end.index], 'JST', 'yyyy-MM-dd') : '';
+    var data = pcData.filter(function(pcValue) {
+      var editedDate = pcValue[dataTitles.rental_end.index] != '' ? Utilities.formatDate(pcValue[dataTitles.rental_end.index], 'JST', 'yyyy-MM-dd') : '';
       return (
-        pcData[dataTitles.rentalid.index] === myId &&
-        pcData[dataTitles.rental_status.index] != '終了' &&
-        pcData[dataTitles.pc_status.index] != '廃止' &&
-        pcData[dataTitles.pc_status.index] != '紛失' &&
-        pcData[dataTitles.pc_status.index] != '譲渡済' &&
-        pcData[dataTitles.pc_status.index] != '使用不可' &&
-        (editedDate != rendalDate || Number(pcData[dataTitles.rental_fee.index]) != Number(value[index.money]))
+        pcValue[dataTitles.rentalid.index] === myId &&
+        (editedDate != rendalDate || Number(pcValue[dataTitles.rental_fee.index]) != Number(value[index.money]))
       );
     });
     if (data.length === 0) return;
@@ -45,8 +47,8 @@ function putKintone(tagetData) {
   KintoneApi.caApi.api.putRecords(putData);
 }
 
-function testKintone() {
-  putKintone(simplitCSVSheet.getZenshisuData());
+function testK() {
+  updateKintone(simplitCSVSheet.getZenshisuData());
   return
   
   //putKintone(simplitCSVSheet.getZenshisuData()); // 台帳の自動更新を走らせる
