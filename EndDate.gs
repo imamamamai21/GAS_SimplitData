@@ -8,7 +8,7 @@ function getEndList() {
   return simplitCSVSheet.getZenshisuData()
     .filter(function(value) {
       var dif = (value[index.endDate] - today) / 1000 / 60 / 60 / 24; // 日で割る
-      return dif < 14
+      return dif < 14;
     })
     .map(function(value){
       return {
