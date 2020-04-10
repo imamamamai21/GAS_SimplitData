@@ -22,7 +22,7 @@ function showTitleError(key) {
  */
 function midnightTrigger() {
   if (isHoliday()) return; // 土日を避ける
-  updateKintone(simplitCSVSheet.getZenshisuData()); // 台帳の自動更新を走らせる
+  updateZenshisuData(); // 台帳の自動更新を走らせる
 }
 
 /**
