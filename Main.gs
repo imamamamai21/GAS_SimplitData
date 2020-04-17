@@ -30,8 +30,7 @@ function midnightTrigger() {
  * トリガー登録：池田 毎日13:00~14:00
  */
 function afternoonCheck() {
-  if (isHoliday()) return; // 土日を避ける
-  postEndData();
+  if (!isHoliday()) postEndData(); // 土日を避ける
 }
 
 function TriggeredUpdate() {

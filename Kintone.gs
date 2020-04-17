@@ -1,3 +1,5 @@
+var csvData = simplitCSVSheet.values.splice(1);
+
 /**
  * 全シスデータをpickupして台帳に登録・更新する
  */

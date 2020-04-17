@@ -59,9 +59,16 @@ SimplitSheet.prototype = {
    */
   getTargetData: function(rentalNo) {
     var index = this.getIndex().yrlNo;
-    return this.values.filter(function(value) {
-      return value[index].toString() === rentalNo.replace('-', '');
-    })[0];
+    var returnData = [];
+    if (this.values.length <= 1) this.values = this.sheet.getDataRange().getValues();
+    
+    this.values.splice(1).some(function(target) {
+      if (target[index] == rentalNo.replace('-', '')) {
+        returnData = target;
+        return true;
+      }
+    });
+    return returnData;
   },
   /**
    * 全シスのレンタルPCのデータを渡す
